@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<meta name="theme-color" content="#000"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-status-bar-style" content="black"/>
+<title>15 MAY · 1:30 PM IST</title>
+<link rel="manifest" href="manifest.json"/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@200;300;600&family=Share+Tech+Mono&display=swap" rel="stylesheet"/>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{width:100%;height:100%;background:#000;overflow:hidden;font-family:'Oswald',sans-serif}
+#app{width:100%;height:100dvh;display:flex;flex-direction:column;align-items:center;justify-content:center}
+
+.title-wrap{text-align:center;margin-bottom:clamp(12px,3vh,30px);animation:fadeUp 1.2s ease both}
+.eyebrow{font-family:'Share Tech Mono',monospace;font-size:clamp(.42rem,1vw,.6rem);letter-spacing:.45em;color:rgba(255,255,255,.3);text-transform:uppercase;margin-bottom:10px}
+.main-title{font-family:'Oswald',sans-serif;font-weight:600;font-size:clamp(1.1rem,3.4vw,2.4rem);letter-spacing:.22em;text-transform:uppercase;color:#fff;text-shadow:0 0 30px rgba(255,255,255,.35)}
+
+.row{display:flex;align-items:center;animation:fadeUp 1.2s ease .15s both}
+.unit{display:flex;flex-direction:column;align-items:center;padding:0 clamp(5px,1.8vw,26px)}
+.digits{font-family:'Oswald',sans-serif;font-weight:300;font-size:clamp(2.8rem,9.5vw,7rem);line-height:1;color:#fff;letter-spacing:-.01em;text-shadow:0 0 18px rgba(255,255,255,.5);min-width:2ch;text-align:center}
+.uname{font-family:'Oswald',sans-serif;font-weight:400;font-size:clamp(.36rem,.8vw,.55rem);letter-spacing:.3em;color:rgba(255,255,255,.35);text-transform:uppercase;margin-top:8px}
+.sep{font-family:'Oswald',sans-serif;font-weight:200;font-size:clamp(1.8rem,7vw,5.5rem);color:rgba(255,255,255,.45);line-height:1;padding-bottom:20px;animation:blink 1s step-end infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.12}}
+
+.bot{margin-top:clamp(12px,2.5vh,28px);display:flex;align-items:center;gap:14px;animation:fadeUp 1.2s ease .3s both}
+.bot-txt{font-family:'Share Tech Mono',monospace;font-size:clamp(.38rem,.75vw,.55rem);letter-spacing:.16em;color:rgba(255,255,255,.18);text-transform:uppercase}
+.bot-dot{width:3px;height:3px;border-radius:50%;background:rgba(255,255,255,.18)}
+
+.status{margin-top:clamp(5px,1vh,10px);display:flex;align-items:center;gap:7px;animation:fadeUp 1.2s ease .4s both}
+.pip{width:5px;height:5px;border-radius:50%;background:#4ade80;box-shadow:0 0 7px #4ade80;animation:pp 2s ease-in-out infinite}
+.pip.off{background:#444;box-shadow:none;animation:none}
+@keyframes pp{0%,100%{opacity:1}50%{opacity:.2}}
+.slbl{font-family:'Share Tech Mono',monospace;font-size:.48rem;letter-spacing:.14em;color:rgba(255,255,255,.18);text-transform:uppercase}
+
+.exp{display:none;text-align:center}
+.exp.show{display:block}
+.exp-txt{font-family:'Oswald',sans-serif;font-weight:700;font-size:clamp(1.8rem,6vw,4rem);letter-spacing:.15em;color:#fff;text-shadow:0 0 50px rgba(255,255,255,.8)}
+
+@keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+@media(max-width:540px){
+  .unit{padding:0 clamp(2px,1.2vw,7px)}
+  .digits{font-size:clamp(2.2rem,13vw,3.6rem)}
+  .sep{font-size:clamp(1.6rem,9.5vw,2.8rem)}
+}
+</style>
+</head>
+<body>
+<div id="app">
+  <div class="title-wrap">
+    <div class="eyebrow">Countdown to</div>
+    <div class="main-title">15 MAY &nbsp;·&nbsp; 1:30 PM IST</div>
+  </div>
+  <div class="row" id="crow">
+    <div class="unit"><div class="digits" id="mo">00</div><div class="uname">Months</div></div>
+    <div class="sep">:</div>
+    <div class="unit"><div class="digits" id="dy">00</div><div class="uname">Days</div></div>
+    <div class="sep">:</div>
+    <div class="unit"><div class="digits" id="hr">00</div><div class="uname">Hours</div></div>
+    <div class="sep">:</div>
+    <div class="unit"><div class="digits" id="mn">00</div><div class="uname">Minutes</div></div>
+    <div class="sep">:</div>
+    <div class="unit"><div class="digits" id="sc">00</div><div class="uname">Seconds</div></div>
+  </div>
+  <div class="exp" id="exp"><div class="exp-txt">⚡ THE MOMENT HAS COME</div></div>
+  <div class="bot">
+    <div class="bot-txt">May 15, 2026</div><div class="bot-dot"></div>
+    <div class="bot-txt">13:30:00 IST</div><div class="bot-dot"></div>
+    <div class="bot-txt">UTC+05:30</div>
+  </div>
+  <div class="status">
+    <div class="pip" id="pip"></div>
+    <div class="slbl" id="slbl">Syncing…</div>
+  </div>
+</div>
+
+<script>
+// SW
+if('serviceWorker' in navigator)
+  window.addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{}));
+
+// ── TARGET ──
+const TARGET = Date.UTC(2026,4,15,8,0,0); // May 15 2026 13:30 IST
+
+// ── TIME OFFSET (NTP sync, non-blocking) ──
+let tOff = 0;
+(async()=>{
+  const apis=['https://worldtimeapi.org/api/ip','https://timeapi.io/api/Time/current/zone?timeZone=UTC'];
+  for(const u of apis){
+    try{
+      const t0=Date.now();
+      const r=await fetch(u,{cache:'no-store',signal:AbortSignal.timeout(4000)});
+      if(!r.ok)continue;
+      const d=await r.json();
+      const t1=Date.now();
+      const ms=d.unixtime?d.unixtime*1000:d.dateTime?new Date(d.dateTime+'Z').getTime():0;
+      if(!ms)continue;
+      tOff=ms+(t1-t0)/2-t1;
+      document.getElementById('pip').classList.remove('off');
+      document.getElementById('slbl').textContent='ONLINE · NTP SYNCED';
+      return;
+    }catch(_){}
+  }
+  document.getElementById('pip').classList.add('off');
+  document.getElementById('slbl').textContent='OFFLINE · DEVICE TIME';
+})();
+setInterval(async()=>{
+  try{const r=await fetch('https://worldtimeapi.org/api/ip',{cache:'no-store',signal:AbortSignal.timeout(4000)});if(!r.ok)return;const d=await r.json();if(d.unixtime)tOff=d.unixtime*1000-Date.now();}catch(_){}
+},30*60*1000);
+
+// ── TICK SOUND ──
+// Simple AudioContext tick — created once, reused
+let actx=null;
+let tickNode=null;
+
+function buildTick(){
+  if(!actx)return;
+  const sr=actx.sampleRate;
+  // 6ms impulse — pure mechanical tick
+  const len=Math.floor(sr*0.006);
+  const buf=actx.createBuffer(1,len,sr);
+  const d=buf.getChannelData(0);
+  for(let i=0;i<len;i++) d[i]=(Math.random()*2-1)*Math.exp(-i/(sr*0.0010));
+  return buf;
+}
+
+let tickBuf=null;
+function fireTick(){
+  if(!actx||actx.state!=='running'||!tickBuf)return;
+  const src=actx.createBufferSource();
+  src.buffer=tickBuf;
+  const bp=actx.createBiquadFilter();
+  bp.type='bandpass';bp.frequency.value=2000;bp.Q.value=6;
+  const g=actx.createGain();g.gain.value=1.0;
+  src.connect(bp).connect(g).connect(actx.destination);
+  src.start();
+}
+
+function startAudio(){
+  if(actx)return;
+  actx=new(window.AudioContext||window.webkitAudioContext)();
+  actx.resume().then(()=>{tickBuf=buildTick();});
+}
+
+// Try auto-start; if blocked wait for tap
+try{
+  actx=new(window.AudioContext||window.webkitAudioContext)();
+  if(actx.state==='running'){tickBuf=buildTick();}
+  else{
+    const resume=()=>{actx.resume().then(()=>{tickBuf=buildTick();});};
+    document.addEventListener('click',resume,{once:true});
+    document.addEventListener('touchstart',resume,{once:true});
+  }
+}catch(_){}
+
+// Stop when tab hidden, resume when visible
+document.addEventListener('visibilitychange',()=>{
+  if(!actx)return;
+  document.hidden ? actx.suspend() : actx.resume();
+});
+
+// ── DOM REFS ──
+const moEl=document.getElementById('mo');
+const dyEl=document.getElementById('dy');
+const hrEl=document.getElementById('hr');
+const mnEl=document.getElementById('mn');
+const scEl=document.getElementById('sc');
+const expEl=document.getElementById('exp');
+const crowEl=document.getElementById('crow');
+
+function pad2(n){return String(n).padStart(2,'0');}
+
+// Cache month calc — only recalculate once per minute (expensive Date math)
+let cachedMonths=0, cachedDays=0, lastMonthCalc=-1;
+function getMonthsDays(nowMs){
+  const nowSec=Math.floor(nowMs/60000); // minute precision is enough
+  if(nowSec===lastMonthCalc) return;
+  lastMonthCalc=nowSec;
+  const nd=new Date(nowMs), td=new Date(TARGET);
+  let m=(td.getFullYear()-nd.getFullYear())*12+(td.getMonth()-nd.getMonth());
+  const tmp=new Date(nd); tmp.setMonth(tmp.getMonth()+m);
+  if(tmp>td) m--;
+  const after=new Date(nd); after.setMonth(after.getMonth()+m);
+  cachedMonths=m;
+  cachedDays=Math.floor((td-after)/86400000);
+}
+
+// ── MAIN LOOP via requestAnimationFrame ──
+// rAF fires ~60fps, we only update DOM when the second actually changes
+// This is the correct way — no setInterval drift
+let prevSec=-1;
+let done=false;
+
+function loop(){
+  if(done)return;
+  requestAnimationFrame(loop);
+
+  const now=Date.now()+tOff;
+  const rem=TARGET-now;
+
+  if(rem<=0){
+    crowEl.style.display='none';
+    expEl.classList.add('show');
+    done=true;
+    return;
+  }
+
+  const totalSec=Math.floor(rem/1000);
+  const s=totalSec%60;
+
+  // Only do DOM work when second changes
+  if(s===prevSec)return;
+  prevSec=s;
+
+  // Tick sound exactly on second change
+  fireTick();
+
+  const m=Math.floor(totalSec/60)%60;
+  const h=Math.floor(totalSec/3600)%24;
+
+  // Month/day calc cached per minute
+  getMonthsDays(now);
+
+  moEl.textContent=pad2(cachedMonths);
+  dyEl.textContent=pad2(cachedDays);
+  hrEl.textContent=pad2(h);
+  mnEl.textContent=pad2(m);
+  scEl.textContent=pad2(s);
+}
+
+requestAnimationFrame(loop);
+</script>
+</body>
+</html>

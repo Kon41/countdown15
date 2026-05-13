@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 192 192" width="192" height="192">
+  <rect width="192" height="192" rx="36" fill="#03001C"/>
+  <circle cx="96" cy="96" r="70" fill="none" stroke="#7B2FFF" stroke-width="3" opacity=".5"/>
+  <circle cx="96" cy="96" r="55" fill="none" stroke="#FF2DCD" stroke-width="1.5" opacity=".3"/>
+  <!-- Clock hands suggestion -->
+  <line x1="96" y1="96" x2="96" y2="46" stroke="#00CFFF" stroke-width="4" stroke-linecap="round"/>
+  <line x1="96" y1="96" x2="126" y2="96" stroke="#7B2FFF" stroke-width="4" stroke-linecap="round"/>
+  <circle cx="96" cy="96" r="5" fill="#FF2DCD"/>
+  <!-- Glow dots on ring -->
+  <circle cx="96" cy="26" r="4" fill="#FFD700"/>
+  <circle cx="166" cy="96" r="3" fill="#7B2FFF" opacity=".7"/>
+  <circle cx="26" cy="96" r="3" fill="#7B2FFF" opacity=".7"/>
+  <circle cx="96" cy="166" r="3" fill="#FF2DCD" opacity=".7"/>
+</svg>
